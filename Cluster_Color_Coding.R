@@ -53,6 +53,8 @@ for(i in seq_along(infl.norm[,1])){
   }
   Cluster[[i]] <- cluster.temp
 }
+rm(i,j)
+
 
 # aus dieser Liste alle Elemente entfernen, die leer sind,
 # und neue Liste erstellen, die nur noch die gefundenen Cluster enthält
@@ -63,13 +65,34 @@ for(i in seq_along(Cluster)){
   }
 }
 Cluster2 <- Cluster[-list.delete]
-
+rm(i)
 
 # noch alle Doppelungen entfernen
 
-Cluster2[[10]][!duplicated(Cluster2[[10]])]
+for(i in seq_along(Cluster2)){
+  Cluster2[[i]] <- Cluster2[[i]][!duplicated(Cluster2[[i]])]
+}
+rm(i)
 
 
-for
-V(igr1)
+# kommen Knoten in mehreren Clustern vor?
+duplicated(unlist(Cluster2))
+table(duplicated(unlist(Cluster2)))
+# ja, 3!!!
+
+
+
+# Achtung, ab hier wirds "schmutzig": mir ist es jetzt egal, zu welchem
+# Cluster ein Knoten farblich zugeordnet wird, wenn er in mindestens zwei 
+# Clustern vorkommt. Das ist nur für DIESEN FALL akzeptabel, weil es um das
+# Prinzip der farblichen Darstellung geht.
+
+
+# Die Kanten alle identisch in Dicke und Art zeichnen:
+E(igr1)$lty <- 1 # durchgehende Linie
+E(igr1)$width <- 1.5 # gleiche Dicke
+
+
+summary(igr1)
+
 
