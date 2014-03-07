@@ -23,11 +23,8 @@ ecoli.net <- extract.network(ecoli.edges)
 ### Step 4: Plot the graph with iGraph
 node.labels <- colnames(ecoli)
 igr1 <- network.make.igraph(ecoli.net, node.labels)
-plot(igr1, main="Ecoli Network", edge.color="green")
+plot(igr1, main="Ecoli Network", edge.color="black")
 
-
-plot(igr1, main="Ecoli Network", vertex.color=c("red", "blue", "green", "yellow"), edge.color="black",
-     )
 
 
 
@@ -75,24 +72,53 @@ for(i in seq_along(Cluster2)){
 rm(i)
 
 
-# kommen Knoten in mehreren Clustern vor?
-duplicated(unlist(Cluster2))
-table(duplicated(unlist(Cluster2)))
-# ja, 3!!!
-
-
-
-# Achtung, ab hier wirds "schmutzig": mir ist es jetzt egal, zu welchem
-# Cluster ein Knoten farblich zugeordnet wird, wenn er in mindestens zwei 
-# Clustern vorkommt. Das ist nur für DIESEN FALL akzeptabel, weil es um das
-# Prinzip der farblichen Darstellung geht.
-
 
 # Die Kanten alle identisch in Dicke und Art zeichnen:
 E(igr1)$lty <- 1 # durchgehende Linie
 E(igr1)$width <- 1.5 # gleiche Dicke
 
 
-summary(igr1)
+# kommen Knoten in mehreren Clustern vor?
+duplicated(unlist(Cluster2))
+table(duplicated(unlist(Cluster2)))
+# ja, 3!!!
 
+
+# !!!!!!!!!!!!!!!!!!!!!!!!
+# DON'T TRY THIS AT HOME!!!!!!
+# Achtung, ab hier wirds "schmutzig": mir ist es jetzt egal, zu welchem
+# Cluster ein Knoten farblich zugeordnet wird, wenn er in mindestens zwei 
+# Clustern vorkommt. Das ist nur für DIESEN FALL akzeptabel, weil es um das
+# Prinzip der farblichen Darstellung geht.
+
+
+
+# ein kleiner Farben-Zufallsgenerator:
+ran.color <- function(n.color){
+  hex <- c(seq(0,9), "A", "B", "C", "D", "E", "F")
+  vec.color <- NULL
+  for(i in 1:n.color){
+    hex.temp <- (paste(c("#",sample(hex, 6, replace=T)), collapse=""))
+    vec.color <- c(vec.color, hex.temp)
+  }
+  return(vec.color)
+}
+
+
+farbanzahl <- length(Cluster2)
+
+
+# ab hier kann durch immer wieder erneutes ausführen des Codes solange 
+# rumgespielt werden, bis einem die Farben gefallen
+# Alternativ kann natürlich auch ein Vector erstellt werden, der die 
+
+farben <- ran.color(farbanzahl)
+
+for(i in seq_along(Cluster2)){
+  V(igr1)[Cluster2[[i]]]$color <- farben[i]
+
+}
+
+
+plot(igr1, main="Ecoli Network", edge.color="black")
 
