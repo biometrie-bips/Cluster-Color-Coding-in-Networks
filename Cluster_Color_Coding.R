@@ -1,4 +1,9 @@
-# fuer Martin
+# R-Code zur farbigen darstellung von Clustern in Netzwerken
+# (fuer Martin)
+
+# von Moritz Hanke
+# Erstellungsdatum: 2014-03-07
+
 
 # WD setzen!!!
 setwd("./Arbeit/BIPS/fuer Martin/")
@@ -8,6 +13,9 @@ load("./inflMatrix.RData")
 
 
 library("GeneNet")
+
+# Code aus dem Paket GeneNet; wird benötigt um den Beispiel-Datensatz
+# und damit den Beispielgraphen zu erstellen
 # Example E. Coli data set (102 genes)
 data(ecoli)
 
@@ -23,7 +31,6 @@ ecoli.net <- extract.network(ecoli.edges)
 ### Step 4: Plot the graph with iGraph
 node.labels <- colnames(ecoli)
 igr1 <- network.make.igraph(ecoli.net, node.labels)
-plot(igr1, main="Ecoli Network", edge.color="black")
 
 
 
@@ -31,6 +38,9 @@ plot(igr1, main="Ecoli Network", edge.color="black")
 
 ##########################################
 # sofern deine Matrix auch infl.norm heißt, kannst du ab hier den Code laufen lassen
+# theoretisch kann also jedes igraph-Objekt reingepackt werden und anshcließend eine
+# farbige Plottung erfolgen. Aber Vorsicht vor Knoten-Doppelunegn in und zwischen
+# Clustern!!!!
 
 # rausschreiben, welche knoten sich clustern
 Cluster <- vector(mode="list")
@@ -111,14 +121,15 @@ farbanzahl <- length(Cluster2)
 # ab hier kann durch immer wieder erneutes ausführen des Codes solange 
 # rumgespielt werden, bis einem die Farben gefallen
 # Alternativ kann natürlich auch ein Vector erstellt werden, der die 
+# gewünschten Farben als Name oder Hex beinhaltet: 
+# farben <- c(<welchen farben auch immer>)
 
 farben <- ran.color(farbanzahl)
 
 for(i in seq_along(Cluster2)){
   V(igr1)[Cluster2[[i]]]$color <- farben[i]
-
 }
 
-
 plot(igr1, main="Ecoli Network", edge.color="black")
+
 
